@@ -357,3 +357,6 @@ impl SetOpt for CloseConnection {
         easy.forbid_reuse(self.0)
     }
 }
+
+#[derive(Clone, Debug)]
+pub(crate) struct Isolate;
