@@ -89,6 +89,41 @@ pub trait Configurable: request::WithRequestConfig {
         })
     }
 
+    /// Set maximum time to wait for Expect 100 request before sending body.
+    ///
+    /// `curl` has internal heuristics that trigger the use of a `Expect`
+    /// header for large enough request bodies where the client first sends the
+    /// request headers along with an `Expect: 100-continue` header. The server
+    /// is supposed to validate the headers and respond with a `100` response
+    /// status code after which `curl` will send the actual request body.
+    ///
+    /// However, if the server does not respond to the initial request
+    /// within `CURLOPT_EXPECT_100_TIMEOUT_MS` then `curl` will send the
+    /// request body anyways.
+    /// More info: https://curl.se/libcurl/c/CURLOPT_EXPECT_100_TIMEOUT_MS.html
+    ///
+    /// If not set, a default timeout of 1 second will be used.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use std::time::Duration;
+    /// let response = Request::post("https://httpbin.org/post")
+    ///     .expect_100_timeout(Duration::from_millis(0)) //Send request body immediately
+    ///     .body(())?
+    ///     .send()?;
+    ///
+    /// let response = Request::post("https://httpbin.org/post")
+    ///     .expect_100_timeout(Duration::from_millis(100)) //Wait for a maximum of 100ms before sending body
+    ///     .body(())?
+    ///     .send()?;
+    /// ```
+    fn expect_100_timeout(self, timeout: Duration) -> Self {
+        self.with_config(move |config| {
+            config.expect_100_timeout = Some(timeout);
+        })
+    }
+
     /// Configure how the use of HTTP versions should be negotiated with the
     /// server.
     ///

@@ -65,6 +65,7 @@ define_request_config! {
     // Used by curl
     timeout: Option<Duration>,
     connect_timeout: Option<Duration>,
+    expect_100_timeout: Option<Duration>,
     version_negotiation: Option<VersionNegotiation>,
     automatic_decompression: Option<bool>,
     authentication: Option<Authentication>,
@@ -100,6 +101,10 @@ impl SetOpt for RequestConfig {
 
         if let Some(timeout) = self.connect_timeout {
             easy.connect_timeout(timeout)?;
+        }
+
+        if let Some(timeout) = self.expect_100_timeout {
+            easy.expect_100_timeout(timeout)?;
         }
 
         if let Some(negotiation) = self.version_negotiation.as_ref() {
