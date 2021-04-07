@@ -28,13 +28,14 @@ spnego = ["curl-sys/spnego"]
 static-curl = ["curl/static-curl"]
 static-ssl = ["curl/static-ssl"]
 text-decoding = ["encoding_rs", "mime"]
+tls-rustls = ["curl/rustls"]
 unstable-interceptors = []
 
 [dependencies]
 async-channel = "1.6"
 crossbeam-utils = "0.8"
-curl = "0.4.34"
-curl-sys = "0.4.37"
+curl = { git = "https://github.com/alexcrichton/curl-rust", branch = "rustls" }
+curl-sys = { git = "https://github.com/alexcrichton/curl-rust", branch = "rustls" }
 futures-lite = "1.11"
 http = "0.2.1"
 log = "0.4"
